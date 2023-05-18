@@ -1,0 +1,3 @@
+Facil,15,15
+Medio,30,20
+Dificil,14,14
