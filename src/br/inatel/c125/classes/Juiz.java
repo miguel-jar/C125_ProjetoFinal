@@ -1,4 +1,4 @@
-package br.inatel.robotbulls.classes;
+package br.inatel.c125.classes;
 
 public class Juiz extends Personagem {
 

@@ -1,6 +1,6 @@
-package br.inatel.robotbulls;
+package br.inatel.c125;
 
-import br.inatel.robotbulls.classes.Lutador;
+import br.inatel.c125.classes.Lutador;
 
 import java.io.IOException;
 import java.nio.file.Files;
