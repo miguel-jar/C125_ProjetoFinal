@@ -11,12 +11,16 @@ public abstract class Personagem {
         this.vida = vida;
     }
 
+    public int getVida() {
+        return vida;
+    }
+
     public void correr() {
-        System.out.println("Correndo...");
+        System.out.println(this.nome + ": Correndo...");
     }
 
     public void andar() {
-        System.out.println("Andando...");
+        System.out.println(this.nome + ": Andando...");
     }
 
 }

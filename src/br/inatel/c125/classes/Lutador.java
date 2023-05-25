@@ -16,12 +16,16 @@ public class Lutador extends Personagem {
   }
 
   public Lutador(String nome, int altura, int peso, int estamina, int forca, int vida, boolean suporte) {
+
     super(nome, altura, peso, vida);
 
     this.estamina = estamina;
     this.forca = forca;
 
-    this.suporte = null;
+    if (suporte)
+      this.suporte = new Suporte("Karina", 165, 65, 100);
+    else
+      this.suporte = null;
   }
 
   @Override
@@ -29,18 +33,20 @@ public class Lutador extends Personagem {
 
     if (estamina > reducaoEstamina) {
       estamina -= reducaoEstamina;
-      System.out.println("Correndo...");
+      System.out.println(this.nome + ": Correndo...");
     }
 
-    else
+    else {
+      estamina = 0;
       this.andar();
+    }
   }
 
   public void chutar(Personagem personagem) {
 
     if (personagem.vida > reducaoVida) {
       personagem.vida -= reducaoVida;
-      System.out.println("Chutando...");
+      System.out.println(this.nome + ": Chutando...");
     }
 
     else
@@ -51,7 +57,7 @@ public class Lutador extends Personagem {
 
     if (personagem.vida > reducaoVida) {
       personagem.vida -= reducaoVida;
-      System.out.println("Socando...");
+      System.out.println(this.nome + ": Socando...");
     }
 
     else
@@ -62,7 +68,12 @@ public class Lutador extends Personagem {
     juiz.fazerContagem();
   }
 
-  public void signature(Personagem personagem){}
-  public void finisher(Personagem personagem){}
+  public void signature(Personagem personagem){
+
+  }
+  public void finisher(Personagem personagem){
+    personagem.vida = 0;
+
+  }
 
 }

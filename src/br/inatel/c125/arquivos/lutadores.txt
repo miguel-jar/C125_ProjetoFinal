@@ -1,5 +1,4 @@
-Marcelao,180,140,20,80,100,1
-Bruninho,110,65,99,60,100,0
-LFelipe,170,90,75,70,100,0
-AAlves,190,45,15,50,100,1
-
+Marcelao,180,140,20,80,100,true
+Bruninho,110,65,99,60,100,false
+LFelipe,170,90,75,70,100,false
+AAlves,190,45,15,50,100,true
