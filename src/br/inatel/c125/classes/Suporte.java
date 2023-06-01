@@ -6,4 +6,8 @@ public class Suporte extends Personagem {
         super(nome, altura, peso, vida);
     }
 
+    public void atrapalharJuiz(Juiz juiz){
+        System.out.println(this.nome + ": Atrapalhando juiz...");
+    }
+
 }
