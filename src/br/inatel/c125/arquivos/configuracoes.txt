@@ -1,0 +1,3 @@
+reducaoEstamina=15
+reducaoSignature=25
+reducaoFinisher=50

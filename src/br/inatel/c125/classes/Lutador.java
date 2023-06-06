@@ -1,34 +1,66 @@
 package br.inatel.c125.classes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 public class Lutador extends Personagem {
 
     private int estamina, forca;
-    private int reducaoVidaSignature;
-
     public Suporte suporte;
 
-    public static int reducaoEstamina, reducaoVida;
+    public static int modificadorEstamina, modificadorForca;
 
-    public static void setReducaoVida(int reducao) {
-        reducaoVida = reducao;
+    private static int reducaoEstamina, reducaoVidaFinisher, reducaoVidaSignature;
+
+    public static void setReducaoEstamina(int reducaoEstamina) {
+        Lutador.reducaoEstamina = reducaoEstamina;
     }
 
-    public static void setReducaoEstamina(int reducao) {
-        reducaoEstamina = reducao;
+    public static void setReducaoVidaFinisher(int reducaoVidaFinisher) {
+        Lutador.reducaoVidaFinisher = reducaoVidaFinisher;
     }
 
-    public Lutador(String nome, int altura, int peso, int estamina, int forca, int vida, boolean suporte) {
+    public static void setReducaoVidaSignature(int reducaoVidaSignature) {
+        Lutador.reducaoVidaSignature = reducaoVidaSignature;
+    }
 
-        super(nome, altura, peso, vida);
+    public Lutador(String nome, int altura, int peso, int estamina, int forca, boolean suporte) {
+
+        super(nome, altura, peso);
 
         this.estamina = estamina;
         this.forca = forca;
-        this.reducaoVidaSignature = 20;
 
-        if (suporte)
-            this.suporte = new Suporte("Karina", 165, 65, 100);
-        else
+        if (suporte) {
+            try {
+                defineSuporte();
+            } catch (IOException e) {
+                System.out.println("Não foi possível definir o suporte.");
+                this.suporte = null;
+            }
+
+        } else
             this.suporte = null;
+    }
+
+    private void defineSuporte() throws IOException {
+
+        Path arquivoSuporte = Paths.get("src/br/inatel/c125/arquivos/suporte_padrao.txt");
+
+
+        String[] parametros = Files.readAllLines(arquivoSuporte).get(0).split(",");
+
+        String name;
+        int hight, weight;
+
+        name = parametros[0];
+        hight = Integer.parseInt(parametros[1]);
+        weight = Integer.parseInt(parametros[2]);
+
+        this.suporte = new Suporte(name, hight, weight);
     }
 
     public void andar() {
@@ -77,7 +109,7 @@ public class Lutador extends Personagem {
     }
 
     public void provocarInimigo() {
-        System.out.println(this.nome + ": Seu frango COCOH COCOH COCOH !!!");
+        System.out.println(this.nome + ": COCOH COCOH COCOH !!!");
     }
 
     public void signature(Personagem personagem) {
@@ -89,8 +121,13 @@ public class Lutador extends Personagem {
     }
 
     public void finisher(Personagem personagem) {
+
         System.out.println(this.nome + ": Finalizando " + personagem.nome);
-        personagem.vida = 0;
+
+        if (personagem.vida > reducaoVidaFinisher) {
+            personagem.vida -= reducaoVidaFinisher;
+        } else
+            personagem.vida = 0;
     }
 
     public void comeback() {

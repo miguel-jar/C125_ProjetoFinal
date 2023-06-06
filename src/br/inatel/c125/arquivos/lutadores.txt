@@ -1,4 +1,5 @@
-MarceLao,180,140,20,25,100,true
-Bruninho,110,65,99,17,100,false
-LFelipe,170,90,75,20,100,false
-AAlves,190,45,15,14,100,true
+AAlves,190,45,15,14,true
+Bruninho,110,65,99,17,false
+LFelipe,170,90,75,20,false
+MarceLao,180,140,20,25,true
+Zanaré,175,85,65,20,false
