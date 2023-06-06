@@ -31,7 +31,10 @@ public class Lutador extends Personagem {
             this.suporte = null;
     }
 
-    @Override
+    public void andar() {
+        System.out.println(this.nome + ": Andando...");
+    }
+
     public void correr() {
 
         if (estamina > reducaoEstamina) {
@@ -49,30 +52,33 @@ public class Lutador extends Personagem {
 
     public void chutar(Personagem personagem) {
 
-        if (personagem.vida > reducaoVida) {
-            personagem.vida -= reducaoVida;
-            System.out.println(this.nome + ": Chutando...");
+        if (personagem.vida > forca) {
+            personagem.vida -= forca;
+
+            if (personagem instanceof Juiz)
+                System.out.println(this.nome + ": Chutando Juiz...");
+            else
+                System.out.println(this.nome + ": Chutando...");
         } else
             this.finisher(personagem);
     }
 
     public void socar(Personagem personagem) {
 
-        if (personagem.vida > reducaoVida) {
-            personagem.vida -= reducaoVida;
+        if (personagem.vida > forca) {
+            personagem.vida -= forca;
             System.out.println(this.nome + ": Socando...");
         } else
             this.finisher(personagem);
     }
 
-    public void interagirComPlateia(){
-        System.out.println("Estao gostando ???");
+    public void interagirComPlateia() {
+        System.out.println(this.nome + ": Estao gostando ???");
     }
 
-    public void provocarInimigo(){
-        System.out.println(this.nome + " : Seu frango. COCOH COCOH COCOH !!!");
+    public void provocarInimigo() {
+        System.out.println(this.nome + ": Seu frango COCOH COCOH COCOH !!!");
     }
-
 
     public void signature(Personagem personagem) {
         if (personagem.vida > reducaoVidaSignature) {
@@ -83,15 +89,24 @@ public class Lutador extends Personagem {
     }
 
     public void finisher(Personagem personagem) {
+        System.out.println(this.nome + ": Finalizando " + personagem.nome);
         personagem.vida = 0;
     }
 
-    public void comeback(){
+    public void comeback() {
 
         System.out.println(this.nome + ": Fugiu pra tomar um AR");
 
         estamina += 20;
         vida += 15;
+
+        if (vida > 100) {
+            vida = 100;
+        }
+
+        if (estamina > 100) {
+            estamina = 100;
+        }
     }
 
     public void pin(Personagem personagem, Juiz juiz) {

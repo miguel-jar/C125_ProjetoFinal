@@ -24,7 +24,6 @@ public class Main {
 
         do {
 
-
             do {
                 System.out.println("\nEscolha a dificuldade:");
                 System.out.println(" - Fácil   [1]");
@@ -80,47 +79,46 @@ public class Main {
 
                     Lutador jogador = new Lutador(parametros[0], altura, peso, estamina, forca, vida, suporte);
 
-                    Lutador inimigo = new Lutador("Zanaré", 175, 85, 65, 65, 100, false);
+                    Lutador inimigo = new Lutador("Zanaré", 175, 85, 65, Lutador.reducaoVida, 100, false);
                     Juiz juiz = new Juiz("Cabessa de Ovo", 185, 80, 50);
 
                     Random r = new Random();
 
+                    System.out.println("\nIniciando partida...\n");
+
                     while ((jogador.getVida() > 0) && (inimigo.getVida() > 0)) {
 
-                        int escolha = r.nextInt(0, 14);
+                        int escolha = r.nextInt(0, 34);
 
                         switch (escolha) {
-                            case 0:
+                            case 0, 1, 2, 28:
                                 jogador.correr();
                                 jogador.chutar(inimigo);
                                 break;
 
-                            case 1:
-                                jogador.correr();
+                            case 3, 4, 5, 29:
                                 jogador.pular();
                                 jogador.socar(inimigo);
                                 break;
 
-                            case 2:
+                            case 6, 26:
                                 jogador.comeback();
                                 break;
 
-                            case 3:
+                            case 7, 33:
                                 jogador.signature(inimigo);
                                 break;
 
-                            case 4:
+                            case 8, 9:
                                 try {
-                                    jogador.suporte.correr();
                                     jogador.suporte.atrapalharJuiz(juiz);
                                 } catch (NullPointerException e) {
                                     jogador.provocarInimigo();
                                 }
                                 break;
 
-                            case 5:
+                            case 10, 11:
                                 try {
-                                    jogador.suporte.correr();
                                     jogador.suporte.atrapalharJuiz(juiz);
                                     juiz.expulsarSuporte(jogador.suporte);
                                 } catch (NullPointerException e) {
@@ -128,44 +126,40 @@ public class Main {
                                 }
                                 break;
 
-                            case 6:
-                                jogador.correr();
+                            case 12:
                                 jogador.pular();
                                 jogador.chutar(juiz);
                                 juiz.desclassificarLutador(jogador);
                                 break;
 
-                            case 7:
+                            case 13, 14, 15, 30:
                                 inimigo.correr();
-                                inimigo.chutar(jogador);
-                                break;
-
-                            case 8:
-                                inimigo.correr();
-                                inimigo.pular();
                                 inimigo.socar(jogador);
                                 break;
 
-                            case 9:
+                            case 16, 17, 18, 31:
+                                inimigo.pular();
+                                inimigo.chutar(jogador);
+                                break;
+
+                            case 19, 27:
                                 inimigo.comeback();
                                 break;
 
-                            case 10:
+                            case 20, 32:
                                 inimigo.signature(jogador);
                                 break;
 
-                            case 11:
+                            case 21, 22:
                                 try {
-                                    inimigo.suporte.correr();
                                     inimigo.suporte.atrapalharJuiz(juiz);
                                 } catch (NullPointerException e) {
                                     inimigo.provocarInimigo();
                                 }
                                 break;
 
-                            case 12:
+                            case 23, 24:
                                 try {
-                                    inimigo.suporte.correr();
                                     inimigo.suporte.atrapalharJuiz(juiz);
                                     juiz.expulsarSuporte(inimigo.suporte);
                                 } catch (NullPointerException e) {
@@ -173,13 +167,14 @@ public class Main {
                                 }
                                 break;
 
-                            case 13:
-                                inimigo.correr();
+                            case 25:
                                 inimigo.pular();
-                                inimigo.chutar(juiz);
+                                inimigo.socar(juiz);
                                 juiz.desclassificarLutador(inimigo);
                                 break;
                         }
+
+                        System.out.println();
 
                         try {
                             TimeUnit.SECONDS.sleep(2);
@@ -187,7 +182,6 @@ public class Main {
                             throw new RuntimeException(e);
                         }
 
-                        System.out.println();
                     }
 
                     if (inimigo.getVida() == -1) {
@@ -196,10 +190,10 @@ public class Main {
                         System.out.println("Parabéns, você perdeu !!");
                     } else if (jogador.getVida() == 0) {
                         inimigo.pin(jogador, juiz);
-                        System.out.println("Parabéns, você perdeu !!");
+                        System.out.println("\nParabéns, você perdeu !!");
                     } else {
                         jogador.pin(inimigo, juiz);
-                        System.out.println("Que pena, você venceu !!");
+                        System.out.println("\nQue pena, você venceu !!");
                     }
 
                     System.out.println("\nDeseja Jogar novamente?");

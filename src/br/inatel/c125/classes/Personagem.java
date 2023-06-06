@@ -14,13 +14,4 @@ public abstract class Personagem {
     public int getVida() {
         return vida;
     }
-
-    public void correr() {
-        System.out.println(this.nome + ": Correndo...");
-    }
-
-    public void andar() {
-        System.out.println(this.nome + ": Andando...");
-    }
-
 }
