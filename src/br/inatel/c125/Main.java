@@ -1,7 +1,8 @@
 package br.inatel.c125;
 
-import br.inatel.c125.classes.Juiz;
-import br.inatel.c125.classes.Lutador;
+import br.inatel.c125.outros.Configuracoes;
+import br.inatel.c125.personagens.Juiz;
+import br.inatel.c125.personagens.Lutador;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,52 +14,6 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-
-    private static void defineConfiguracoes() throws IOException {
-
-        Path arquivoDificuldade = Paths.get("src/br/inatel/c125/arquivos/configuracoes.txt");
-        List<String> configuracoes = Files.readAllLines(arquivoDificuldade);
-
-        String a, b, c;
-
-        a = configuracoes.get(0).split("=")[1];
-        b = configuracoes.get(1).split("=")[1];
-        c = configuracoes.get(2).split("=")[1];
-
-        Lutador.setReducaoEstamina(Integer.parseInt(a));
-        Lutador.setReducaoVidaFinisher(Integer.parseInt(b));
-        Lutador.setReducaoVidaSignature(Integer.parseInt(c));
-    }
-
-    private static void defineDificuldade(Scanner teclado) throws IOException {
-
-        Path arquivoDificuldade = Paths.get("src/br/inatel/c125/arquivos/dificuldades.txt");
-        List<String> dificuldades = Files.readAllLines(arquivoDificuldade);
-
-        int dificuldade;
-
-        do {
-            System.out.println("\nEscolha a dificuldade:");
-
-            for (int i = 0; i < dificuldades.size(); i++) {
-                System.out.println(" [" + i + "] " + dificuldades.get(i).split(",")[0]);
-            }
-
-            System.out.print("\nEscolha: ");
-            dificuldade = teclado.nextInt();
-
-            if ((dificuldade > 3) || (dificuldade < 1))
-                System.out.println("\nEscolha indisponível. Tente Novamente");
-
-        } while ((dificuldade >= dificuldades.size()) || (dificuldade < 0));
-
-        String[] a = dificuldades.get(dificuldade).split(",");
-
-        System.out.println("\nDificuldade definida para " + a[0].toUpperCase());
-
-        Lutador.modificadorForca = Integer.parseInt(a[2]);
-        Lutador.modificadorEstamina = Integer.parseInt(a[1]);
-    }
 
     private static String[] escolheLutador(Scanner teclado) throws IOException {
 
@@ -82,15 +37,13 @@ public class Main {
 
         } while ((escolhaJogador < 0) || (escolhaJogador >= lutadores.size()));
 
-        String[] parametros = lutadores.get(escolhaJogador).split(",");
-
-        return parametros;
+        return lutadores.get(escolhaJogador).split(",");
     }
 
     public static void main(String[] args) {
 
         try {
-            defineConfiguracoes();
+            Configuracoes.defineConfiguracoes();
 
             int continuacao;
             Scanner teclado = new Scanner(System.in);
@@ -98,7 +51,7 @@ public class Main {
             do {
 
                 try {
-                    defineDificuldade(teclado);
+                    Configuracoes.defineDificuldade(teclado);
                 } catch (IOException e) {
                     System.out.println("Erro: Não foi possível definir dificuldade. Reinicie o jogo e tente novamente");
                     break;
@@ -120,7 +73,7 @@ public class Main {
                     forca = Integer.parseInt(parametros[4]);
                     suporte = Boolean.parseBoolean(parametros[5]);
 
-                    jogador = new Lutador(nome, altura, peso, estamina - Lutador.modificadorEstamina, forca - Lutador.modificadorForca, suporte);
+                    jogador = new Lutador(nome, altura, peso, estamina - Configuracoes.getModificadorEstamina(), forca - Configuracoes.getModificadorForca(), suporte);
 
                     System.out.println("\nLutador " + nome + " selecionado");
 
@@ -144,7 +97,7 @@ public class Main {
                     forca = Integer.parseInt(parametros[4]);
                     suporte = Boolean.parseBoolean(parametros[5]);
 
-                    inimigo = new Lutador(nome, altura, peso, estamina + Lutador.modificadorEstamina, forca + Lutador.modificadorForca, suporte);
+                    inimigo = new Lutador(nome, altura, peso, estamina + Configuracoes.getModificadorEstamina(), forca + Configuracoes.getModificadorForca(), suporte);
 
                     System.out.println("\nInimigo " + nome + " selecionado");
 
@@ -153,7 +106,26 @@ public class Main {
                     break;
                 }
 
-                Juiz juiz = new Juiz("Cabessa de Ovo", 185, 80);
+                Juiz juiz;
+
+                try {
+                    Path arquivoSuporte = Paths.get("src/br/inatel/c125/arquivos/padroes/juiz_padrao.txt");
+
+                    String[] parametros = Files.readAllLines(arquivoSuporte).get(0).split(",");
+
+                    String name;
+                    int hight, weight;
+
+                    name = parametros[0];
+                    hight = Integer.parseInt(parametros[1]);
+                    weight = Integer.parseInt(parametros[2]);
+
+                    juiz = new Juiz(name, hight, weight);
+
+                } catch (IOException e) {
+                    System.out.println("Erro: Não foi possível criar juiz. Reinicie o jogo e tente novamente");
+                    break;
+                }
 
                 Random r = new Random();
 
@@ -161,90 +133,98 @@ public class Main {
 
                 while ((jogador.getVida() > 0) && (inimigo.getVida() > 0)) {
 
-                    int escolha = r.nextInt(0, 34);
+                    int escolha = r.nextInt(0, 60);
 
                     switch (escolha) {
-                        case 0, 1, 2, 28:
+                        case 0, 1, 2, 3, 4, 5, 6, 7 -> {
                             jogador.correr();
                             jogador.chutar(inimigo);
-                            break;
+                        }
 
-                        case 3, 4, 5, 29:
+                        case 8, 9, 10, 11, 12, 13, 14, 15 -> {
                             jogador.pular();
                             jogador.socar(inimigo);
-                            break;
+                        }
 
-                        case 6, 26:
-                            jogador.comeback();
-                            break;
-
-                        case 7, 33:
+                        case 16, 17, 18 -> {
                             jogador.signature(inimigo);
-                            break;
+                            jogador.fazerPin(inimigo, juiz);
+                        }
 
-                        case 8, 9:
-                            try {
-                                jogador.suporte.atrapalharJuiz(juiz);
-                            } catch (NullPointerException e) {
-                                jogador.provocarInimigo();
-                            }
-                            break;
+                        case 19 -> {
+                            jogador.finisher(inimigo);
+                            jogador.fazerPin(inimigo, juiz);
+                        }
 
-                        case 10, 11:
-                            try {
-                                jogador.suporte.atrapalharJuiz(juiz);
-                                juiz.expulsarSuporte(jogador.suporte);
-                            } catch (NullPointerException e) {
-                                jogador.interagirComPlateia();
-                            }
-                            break;
-
-                        case 12:
+                        case 20 -> {
                             jogador.pular();
                             jogador.chutar(juiz);
                             juiz.desclassificarLutador(jogador);
-                            break;
+                        }
 
-                        case 13, 14, 15, 30:
+                        case 21, 22 -> jogador.comeback();
+
+                        case 23, 24 -> {
+                            try {
+                                jogador.getSuporte().atrapalhar(inimigo);
+                            } catch (NullPointerException e) {
+                                jogador.provocarInimigo();
+                            }
+                        }
+
+                        case 25, 26 -> {
+                            try {
+                                jogador.getSuporte().signature(inimigo);
+                                juiz.expulsarSuporte(jogador);
+                            } catch (NullPointerException e) {
+                                jogador.interagirComPlateia();
+                            }
+                        }
+
+                        case 27, 28, 29, 30, 31, 32, 33, 34 -> {
                             inimigo.correr();
                             inimigo.socar(jogador);
-                            break;
+                        }
 
-                        case 16, 17, 18, 31:
+                        case 35, 36, 37, 38, 39, 40, 41, 42 -> {
                             inimigo.pular();
                             inimigo.chutar(jogador);
-                            break;
+                        }
 
-                        case 19, 27:
-                            inimigo.comeback();
-                            break;
-
-                        case 20, 32:
+                        case 43, 44, 45 -> {
                             inimigo.signature(jogador);
-                            break;
+                            inimigo.fazerPin(jogador, juiz);
+                        }
 
-                        case 21, 22:
-                            try {
-                                inimigo.suporte.atrapalharJuiz(juiz);
-                            } catch (NullPointerException e) {
-                                inimigo.provocarInimigo();
-                            }
-                            break;
+                        case 46 -> {
+                            inimigo.finisher(jogador);
+                            inimigo.fazerPin(jogador, juiz);
+                        }
 
-                        case 23, 24:
-                            try {
-                                inimigo.suporte.atrapalharJuiz(juiz);
-                                juiz.expulsarSuporte(inimigo.suporte);
-                            } catch (NullPointerException e) {
-                                inimigo.interagirComPlateia();
-                            }
-                            break;
-
-                        case 25:
+                        case 47 -> {
                             inimigo.pular();
                             inimigo.socar(juiz);
                             juiz.desclassificarLutador(inimigo);
-                            break;
+                        }
+
+                        case 48, 49 -> inimigo.comeback();
+
+                        case 50, 51 -> {
+                            try {
+                                inimigo.getSuporte().atrapalhar(jogador);
+                            } catch (NullPointerException e) {
+                                inimigo.provocarInimigo();
+                            }
+                        }
+
+                        case 52, 53 -> {
+                            try {
+                                inimigo.getSuporte().signature(jogador);
+                                juiz.expulsarSuporte(inimigo);
+                            } catch (NullPointerException e) {
+                                inimigo.interagirComPlateia();
+                            }
+                        }
                     }
 
                     System.out.println();
@@ -262,10 +242,10 @@ public class Main {
                 } else if (jogador.getVida() == -1) {
                     System.out.println("Parabéns, você perdeu !!");
                 } else if (jogador.getVida() == 0) {
-                    inimigo.pin(jogador, juiz);
+                    inimigo.fazerPin(jogador, juiz);
                     System.out.println("\nParabéns, você perdeu !!");
                 } else {
-                    jogador.pin(inimigo, juiz);
+                    jogador.fazerPin(inimigo, juiz);
                     System.out.println("\nQue pena, você venceu !!");
                 }
 

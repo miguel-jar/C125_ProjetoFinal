@@ -1,30 +1,20 @@
-package br.inatel.c125.classes;
+package br.inatel.c125.personagens;
+
+import br.inatel.c125.outros.Configuracoes;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+public class Lutador extends Personagem implements GolpeEspecial {
 
-public class Lutador extends Personagem {
+    private int estamina;
+    private final int forca;
+    protected Suporte suporte;
 
-    private int estamina, forca;
-    public Suporte suporte;
-
-    public static int modificadorEstamina, modificadorForca;
-
-    private static int reducaoEstamina, reducaoVidaFinisher, reducaoVidaSignature;
-
-    public static void setReducaoEstamina(int reducaoEstamina) {
-        Lutador.reducaoEstamina = reducaoEstamina;
-    }
-
-    public static void setReducaoVidaFinisher(int reducaoVidaFinisher) {
-        Lutador.reducaoVidaFinisher = reducaoVidaFinisher;
-    }
-
-    public static void setReducaoVidaSignature(int reducaoVidaSignature) {
-        Lutador.reducaoVidaSignature = reducaoVidaSignature;
+    public Suporte getSuporte() {
+        return suporte;
     }
 
     public Lutador(String nome, int altura, int peso, int estamina, int forca, boolean suporte) {
@@ -48,8 +38,7 @@ public class Lutador extends Personagem {
 
     private void defineSuporte() throws IOException {
 
-        Path arquivoSuporte = Paths.get("src/br/inatel/c125/arquivos/suporte_padrao.txt");
-
+        Path arquivoSuporte = Paths.get("src/br/inatel/c125/arquivos/padroes/suporte_padrao.txt");
 
         String[] parametros = Files.readAllLines(arquivoSuporte).get(0).split(",");
 
@@ -63,23 +52,16 @@ public class Lutador extends Personagem {
         this.suporte = new Suporte(name, hight, weight);
     }
 
-    public void andar() {
-        System.out.println(this.nome + ": Andando...");
-    }
-
+    @Override
     public void correr() {
 
-        if (estamina > reducaoEstamina) {
-            estamina -= reducaoEstamina;
+        if (estamina > Configuracoes.getReducaoEstaminaLutador()) {
+            estamina -= Configuracoes.getReducaoEstaminaLutador();
             System.out.println(this.nome + ": Correndo...");
         } else {
             estamina = 0;
             this.andar();
         }
-    }
-
-    public void pular() {
-        System.out.println(this.nome + ": Pulando...");
     }
 
     public void chutar(Personagem personagem) {
@@ -112,27 +94,28 @@ public class Lutador extends Personagem {
         System.out.println(this.nome + ": COCOH COCOH COCOH !!!");
     }
 
+    public void finisher(Personagem personagem) {
+
+        System.out.println(this.nome + ": Finalizando " + personagem.nome);
+
+        if (personagem.vida > Configuracoes.getReducaoFinisherLutador()) {
+            personagem.vida -= Configuracoes.getReducaoFinisherLutador();
+        } else
+            personagem.vida = 0;
+    }
+
+    @Override
     public void signature(Personagem personagem) {
-        if (personagem.vida > reducaoVidaSignature) {
-            personagem.vida -= reducaoVidaSignature;
+        if (personagem.vida > Configuracoes.getReducaoSignatureLutador()) {
+            personagem.vida -= Configuracoes.getReducaoSignatureLutador();
             System.out.println(this.nome + ": Executando ataque especial...");
         } else
             this.finisher(personagem);
     }
 
-    public void finisher(Personagem personagem) {
-
-        System.out.println(this.nome + ": Finalizando " + personagem.nome);
-
-        if (personagem.vida > reducaoVidaFinisher) {
-            personagem.vida -= reducaoVidaFinisher;
-        } else
-            personagem.vida = 0;
-    }
-
     public void comeback() {
 
-        System.out.println(this.nome + ": Fugiu pra tomar um AR");
+        System.out.println(this.nome + " fugiu para tomar um ar");
 
         estamina += 20;
         vida += 15;
@@ -146,9 +129,13 @@ public class Lutador extends Personagem {
         }
     }
 
-    public void pin(Personagem personagem, Juiz juiz) {
+    public void fazerPin(Lutador lutador, Juiz juiz) {
 
-        System.out.println(this.nome + " fazendo pin em " + personagem.nome);
-        juiz.fazerContagem();
+        System.out.println(this.nome + " fazendo pin em " + lutador.nome);
+
+        if (lutador.vida > 0)
+            juiz.fazerContagem(lutador);
+        else
+            juiz.fazerContagem();
     }
 }
