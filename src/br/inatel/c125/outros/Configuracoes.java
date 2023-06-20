@@ -68,7 +68,7 @@ public class Configuracoes {
             System.out.print("\nEscolha: ");
             dificuldade = teclado.nextInt();
 
-            if ((dificuldade > 3) || (dificuldade < 1))
+            if ((dificuldade > 2) || (dificuldade < 0))
                 System.out.println("\nEscolha indisponível. Tente Novamente");
 
         } while ((dificuldade >= dificuldades.size()) || (dificuldade < 0));
