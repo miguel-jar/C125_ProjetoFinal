@@ -8,37 +8,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-
-    private static String[] escolheLutador(Scanner teclado) throws IOException {
-
-        int escolhaJogador;
-
-        Path arquivoLutadores = Paths.get("src/br/inatel/c125/arquivos/lutadores.txt");
-        List<String> lutadores = Files.readAllLines(arquivoLutadores);
-
-        do {
-            System.out.println("\nEscolha seu lutador:");
-
-            for (int i = 0; i < lutadores.size(); i++) {
-                System.out.println(" [" + i + "] " + lutadores.get(i).split(",")[0]);
-            }
-
-            System.out.print("\nEscolha: ");
-            escolhaJogador = teclado.nextInt();
-
-            if ((escolhaJogador < 0) || (escolhaJogador >= lutadores.size()))
-                System.out.println("\nEscolha indisponível. Tente Novamente");
-
-        } while ((escolhaJogador < 0) || (escolhaJogador >= lutadores.size()));
-
-        return lutadores.get(escolhaJogador).split(",");
-    }
 
     public static void main(String[] args) {
 
@@ -50,17 +24,13 @@ public class Main {
 
             do {
 
-                try {
-                    Configuracoes.defineDificuldade(teclado);
-                } catch (IOException e) {
-                    System.out.println("Erro: Não foi possível definir dificuldade. Reinicie o jogo e tente novamente");
-                    break;
-                }
-
                 Lutador jogador, inimigo;
 
+                System.out.println("\n...................................... Seleção de Personagens ......................................");
+
                 try {
-                    String[] parametros = escolheLutador(teclado);
+
+                    String[] parametros = Configuracoes.escolheLutador(teclado);
 
                     String nome;
                     int altura, peso, estamina, forca;
@@ -84,7 +54,7 @@ public class Main {
 
                 try {
 
-                    String[] parametros = escolheLutador(teclado);
+                    String[] parametros = Configuracoes.escolheLutador(teclado);
 
                     String nome;
                     int altura, peso, estamina, forca;
@@ -99,10 +69,19 @@ public class Main {
 
                     inimigo = new Lutador(nome, altura, peso, estamina + Configuracoes.getModificadorEstamina(), forca + Configuracoes.getModificadorForca(), suporte);
 
-                    System.out.println("\nInimigo " + nome + " selecionado");
+                    System.out.println("\nInimigo " + nome + " selecionado\n");
 
                 } catch (IOException e) {
                     System.out.println("Erro: Não foi possível selecionar inimigo. Reinicie o jogo e tente novamente");
+                    break;
+                }
+
+                System.out.println("...................................... Seleção de Dificuldade ......................................");
+
+                try {
+                    Configuracoes.defineDificuldade(teclado);
+                } catch (IOException e) {
+                    System.out.println("Erro: Não foi possível definir dificuldade. Reinicie o jogo e tente novamente");
                     break;
                 }
 
@@ -131,9 +110,11 @@ public class Main {
 
                 System.out.println("\nIniciando partida...\n");
 
+                System.out.println("............................................ Simulação .............................................\n");
+
                 while ((jogador.getVida() > 0) && (inimigo.getVida() > 0)) {
 
-                    int escolha = r.nextInt(0, 60);
+                    int escolha = r.nextInt(0, 54);
 
                     switch (escolha) {
                         case 0, 1, 2, 3, 4, 5, 6, 7 -> {
@@ -230,7 +211,7 @@ public class Main {
                     System.out.println();
 
                     try {
-                        TimeUnit.SECONDS.sleep(2);
+                        TimeUnit.SECONDS.sleep(3);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

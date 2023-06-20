@@ -9,6 +9,8 @@ import java.util.Scanner;
 
 public class Configuracoes {
 
+    private static boolean lutador = true;
+
     private static int modificadorEstamina, modificadorForca;
     private static int reducaoEstaminaLutador, reducaoFinisherLutador, reducaoSignatureLutador;
     private static int reducaoSignatureSuporte;
@@ -77,5 +79,36 @@ public class Configuracoes {
 
         modificadorForca = Integer.parseInt(a[2]);
         modificadorEstamina = Integer.parseInt(a[1]);
+    }
+
+    public static String[] escolheLutador(Scanner teclado) throws IOException {
+
+        int escolhaJogador;
+
+        Path arquivoLutadores = Paths.get("src/br/inatel/c125/arquivos/lutadores.txt");
+        List<String> lutadores = Files.readAllLines(arquivoLutadores);
+
+        do {
+
+            if (lutador)
+                System.out.println("\nEscolha seu lutador:");
+            else
+                System.out.println("\nEscolha seu inimigo:");
+
+            for (int i = 0; i < lutadores.size(); i++) {
+                System.out.println(" [" + i + "] " + lutadores.get(i).split(",")[0]);
+            }
+
+            System.out.print("\nEscolha: ");
+            escolhaJogador = teclado.nextInt();
+
+            if ((escolhaJogador < 0) || (escolhaJogador >= lutadores.size()))
+                System.out.println("\nEscolha indisponível. Tente Novamente");
+
+        } while ((escolhaJogador < 0) || (escolhaJogador >= lutadores.size()));
+
+        lutador = !lutador;
+
+        return lutadores.get(escolhaJogador).split(",");
     }
 }

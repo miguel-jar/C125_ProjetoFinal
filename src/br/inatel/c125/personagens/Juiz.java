@@ -16,9 +16,9 @@ public class Juiz extends Personagem {
 
         try {
             lutador.suporte.atrapalhar(this);
-            System.out.println(lutador.nome + ": KickOut !!!");
+            System.out.println("\n" + lutador.nome + ": KickOut !!!");
         } catch (NullPointerException e) {
-            System.out.println(lutador.nome + ": KickOut !!!");
+            System.out.println("\n" + lutador.nome + ": KickOut !!!");
         }
     }
 
